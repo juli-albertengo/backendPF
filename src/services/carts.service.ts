@@ -1,7 +1,5 @@
 const fs = require('fs')
 const path = require('path')
-import { json } from 'express';
-import { Console } from 'node:console';
 import {Product} from './products.service';
 
 export class Cart {

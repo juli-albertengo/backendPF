@@ -1,5 +1,4 @@
-const fs = require('fs')
-const path = require('path')
+import {productModel} from '../repositories/index';
 
 export class Product {
     public id: string
@@ -24,14 +23,14 @@ export class Product {
 }
 
 export class Products{
-    products: Array<Product>
+    products: any;
     
-    constructor(arrayProducts: Array<Product>){
+    constructor(arrayProducts: any){
         this.products = arrayProducts;
     }
 
     async getAllProducts(){
-        this.products = await bringProductsFromDB()
+        this.products = await productModel.find({})
         if(this.products === null || this.products === []){
             return []
         }
@@ -39,83 +38,52 @@ export class Products{
     }
 
     async getProductById(id: string){
-        this.products = await bringProductsFromDB()
-        let product = this.products.find(product => {
-            return product.id === id
-        })
+        let product = await productModel.findOne({_id: id})
         if(!product){
             return {}
         }
         return product;
     }
 
-    async addProduct(product: Product){
-        this.products = await bringProductsFromDB()
-        this.products = [... this.products, product];
-        saveProductsToDB(this.products);
-        return product;
+    async getProductsByName(name: string){
+        let expr = new RegExp(name, "gi")
+        let products = await productModel.find({name: {$regex: expr}})
+        if(products === null || products === []){
+            return []
+        }
+        return products;
+    }
+
+    async getProductsByPriceRange(min, max){
+        let myMin = parseInt(min);
+        let myMax = parseInt(max);
+        let products = await productModel.find({$and : [{price: {$gte: myMin}}, {price: {$lte: myMax}}]})
+        if(products === null || products === []){
+            return []
+        }
+        return products;
+    }
+
+    async addProduct(product: any){
+        let productToSave = new productModel(product);
+        let savedProduct = await productToSave.save();
+        return savedProduct;
     }
 
     async updateProductById(id: string, updatedProduct: any){
-        //Encontrar el producto y modificarlo
-        this.products = await bringProductsFromDB();
-        let product = this.products.find(product => {
-            return product.id === id;
-        })
+        let product = await productModel.updateOne({_id: id}, {$set: updatedProduct});
         if(!product){
             return {error : 'Producto no encontrado'}
         }
-        product.timestamp = updatedProduct.timestamp;
-        product.name = updatedProduct.name;
-        product.description = updatedProduct.description;
-        product.code = updatedProduct.code;
-        product.foto = updatedProduct.foto;
-        product.price = updatedProduct.price;
-        product.stock = updatedProduct.stock;
-
-        //Guardar el nuevo array de productos a la db
-        let newProducts = this.products.filter(product => {
-            return product.id !== id
-        })
-        this.products = [...newProducts, product];
-        saveProductsToDB(this.products);
-
         return product;
     }
 
     async deleteProduct(id: string){
-        this.products = await bringProductsFromDB();
-        let product = this.products.find(product => {
-            return product.id === id;
-        })
+        let product = await productModel.deleteOne({_id: id})
         if(!product){
-            return {error : 'Producto no encontrado'}
+            return {}
         }
-        let newProducts = this.products.filter(product => {
-            return product.id !== id
-        })
-        this.products = newProducts;
-        saveProductsToDB(this.products);
+        return product;
     }
 }
 
-const bringProductsFromDB = async() => {
-    try {
-        const data = await fs.promises.readFile(`${path.join(__dirname + '/../repositories/products.json')}`, 'utf-8');
-        const products = await JSON.parse(data);
-        return products;
-    } catch (error){
-        console.log(error);
-        return [];
-    }
-}
-
-const saveProductsToDB = async(products: Array<Product>) => {
-    let parsedProducts = JSON.stringify(products);
-    try {
-        await fs.promises.writeFile(`${path.join(__dirname + '/../repositories/products.json')}`, parsedProducts);
-    } catch (error){
-        console.log(error);
-        return [];
-    }
-}
