@@ -8,30 +8,23 @@ let productos = new productsServices.Products([])
 //GET /productos => Me permite listar todos los productos disponibles
 productsRouter.get('/', async (req, res)=> {
     let products = await productos.getAllProducts();
-    res.send(products);
+    res.render('products.ejs', {products});
 })
 
 //GET /productos/:producto_id  =>  Obtener un producto por su id
 productsRouter.get('/id/:id', async (req, res)=> {
     const {id} = req.params;
     let product = await productos.getProductById(id);
-    res.send(product);
+    res.render('singleProduct.ejs', {product});
 })
 
-//GET /productos/:producto_name  =>  Obtener productos por su nombre
-productsRouter.get('/name/:name', async (req, res)=> {
-    const {name} = req.params;
-    let products = await productos.getProductsByName(name);
+//GET /productos/:category => Obtener productos por su categoria
+productsRouter.get('/category/:category', async (req, res)=> {
+    const {category} = req.params;
+    let products = await productos.getProductsByCategory(category);
     res.send(products);
 })
 
-//GET /productos/:producto_pricerange  =>  Obtener productos por su nombre
-productsRouter.get('/price', async (req, res)=> {
-    let min = req.query.min;
-    let max = req.query.max;
-    let products = await productos.getProductsByPriceRange(min, max);
-    res.send(products);
-})
 
 //POST /productos => Para incorporar productos al listado
 productsRouter.post('/', async (req, res)=> {
@@ -77,6 +70,24 @@ export default productsRouter;
 
 
 
+/* Other routes I could potentially use
+
+//GET /productos/:producto_name  =>  Obtener productos por su nombre
+productsRouter.get('/name/:name', async (req, res)=> {
+    const {name} = req.params;
+    let products = await productos.getProductsByName(name);
+    res.send(products);
+})
+
+//GET /productos/:producto_pricerange  =>  Obtener productos por su nombre
+productsRouter.get('/price', async (req, res)=> {
+    let min = req.query.min;
+    let max = req.query.max;
+    let products = await productos.getProductsByPriceRange(min, max);
+    res.send(products);
+})
+
+*/
 
 
 

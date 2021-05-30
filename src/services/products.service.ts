@@ -2,23 +2,19 @@ import {productModel} from '../repositories/index';
 
 export class Product {
     public id: string
-    public timestamp: Date
     public name: string
+    public category: string
     public description: string
-    public code: string
     public foto: string
     public price: number
-    public stock: number
 
-    constructor(id: string, timestamp: Date, name: string, description: string, code: string, foto: string, price:number, stock: number ){
+    constructor(id: string, category: string, name: string, description: string, foto: string, price:number){
         this.id = id;
-        this.timestamp = timestamp;
         this.name = name;
+        this.category = category;
         this.description = description;
-        this.code = code;
         this.foto = foto;
         this.price = price;
-        this.stock = stock;
     }
 }
 
@@ -37,31 +33,20 @@ export class Products{
         return this.products;
     }
 
+    async getProductsByCategory(category: string){
+        let products = await productModel.find({category: category})
+        if(products === null || products === []){
+            return []
+        }
+        return products;
+    }
+
     async getProductById(id: string){
         let product = await productModel.findOne({_id: id})
         if(!product){
             return {}
         }
         return product;
-    }
-
-    async getProductsByName(name: string){
-        let expr = new RegExp(name, "gi")
-        let products = await productModel.find({name: {$regex: expr}})
-        if(products === null || products === []){
-            return []
-        }
-        return products;
-    }
-
-    async getProductsByPriceRange(min, max){
-        let myMin = parseInt(min);
-        let myMax = parseInt(max);
-        let products = await productModel.find({$and : [{price: {$gte: myMin}}, {price: {$lte: myMax}}]})
-        if(products === null || products === []){
-            return []
-        }
-        return products;
     }
 
     async addProduct(product: any){
@@ -87,3 +72,26 @@ export class Products{
     }
 }
 
+
+
+/* Other functions/methods I could potentially use
+    async getProductsByName(name: string){
+        let expr = new RegExp(name, "gi")
+        let products = await productModel.find({name: {$regex: expr}})
+        if(products === null || products === []){
+            return []
+        }
+        return products;
+    }
+
+    async getProductsByPriceRange(min, max){
+        let myMin = parseInt(min);
+        let myMax = parseInt(max);
+        let products = await productModel.find({$and : [{price: {$gte: myMin}}, {price: {$lte: myMax}}]})
+        if(products === null || products === []){
+            return []
+        }
+        return products;
+    }
+
+*/
