@@ -4,6 +4,7 @@ const app = express()
 
 import {productsRouter} from "./routes";
 import {cartsRouter} from "./routes";
+import {adminAuthRoutes} from "./routes";
 import {connectToDB} from './repositories/index';
 
 app.use(express.json());
@@ -19,12 +20,11 @@ app.get('/', (req, res)=>{
 
 app.use('/products', productsRouter);
 app.use('/carts', cartsRouter);
+app.use('/admin', adminAuthRoutes);
 
 app.listen(8080 || process.env.PORT, async( ) => {
     console.log(await connectToDB())
 })
-
-
 
 /*
 app.get('/public/css/styles.css', (req, res)=>{
