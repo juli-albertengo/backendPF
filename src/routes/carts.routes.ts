@@ -1,9 +1,19 @@
+require('dotenv').config();
 const express = require('express');
+const passport = require('passport');
+
 import {cartsServices} from '../services/index'
 
 const cartsRouter = express.Router();
 
 let carts = new cartsServices.Carts([])
+
+cartsRouter.get('/', passport.authenticate('jwt', { session: false }),  (req, res)=> {
+    const user = req.user;
+    const tokenObject = req.tokenObject;
+    console.log(req)
+    res.render('protectedRoute.ejs', {user, token: tokenObject.token, expiresIn: tokenObject.expiresIn});
+})
 
 //GET /carritos/:carrito_id  => Obtener un carrito por su ID
 cartsRouter.get('/:id', async(req, res) => {

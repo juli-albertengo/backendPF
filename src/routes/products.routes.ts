@@ -7,6 +7,7 @@ let productos = new productsServices.Products([])
 
 //GET /productos => Me permite listar todos los productos disponibles
 productsRouter.get('/', async (req, res)=> {
+    console.log(req);
     let products = await productos.getAllProducts();
     res.render('products.ejs', {products});
 })
@@ -70,7 +71,7 @@ export default productsRouter;
 
 
 
-/* Other routes I could potentially use
+/* OTHER ROUTES I COULD POTENTIALLY USE
 
 //GET /productos/:producto_name  =>  Obtener productos por su nombre
 productsRouter.get('/name/:name', async (req, res)=> {

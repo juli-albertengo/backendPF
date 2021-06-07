@@ -26,23 +26,17 @@
                   <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="/chat">Customer Support</a>
                   </li>
-                  <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/admin/login">Admin Log in</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/admin/signup">Admin Sign up</a>
-                  </li>
                 </ul>
                 <ul class="navbar-nav mx-auto">
-                    <a class="nav-link active" aria-current="page" href="/login">Log in</a>
-                    <a class="nav-link active" aria-current="page" href="/signup">Sign up</a>
+                    <a class="nav-link active" aria-current="page" href="/auth/login">Log in</a>
+                    <a class="nav-link active" aria-current="page" href="/auth/signup">Sign up</a>
                 </ul>
               </div>
             </div>
           </nav>
     </header>
     <main class="container-fluid">
-        <h1 class="text-center mb-5"><%= product.name %></h1>
+        <h1 class="text-center mb-5">Single Product Page</h1>
         <div class="container">
           <div class="mb-4">
             <p><a href='/products'>Go back to products</a></p>
@@ -53,6 +47,7 @@
                         <img src="/img/placeholder.png"/>
                     </div>
                     <div class="mb-5">
+                      <p class="mb-0"><%= product.name %></p>
                         <p class="mb-0">Product price: $<%= product.price %></p>
                         <p class="mb-0">Product category: <%= product.category %></p>
                     </div>

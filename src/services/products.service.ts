@@ -58,7 +58,7 @@ export class Products{
     async updateProductById(id: string, updatedProduct: any){
         let product = await productModel.updateOne({_id: id}, {$set: updatedProduct});
         if(!product){
-            return {error : 'Producto no encontrado'}
+            return {error : 'Product not found'}
         }
         return product;
     }
@@ -73,8 +73,8 @@ export class Products{
 }
 
 
-
-/* Other functions/methods I could potentially use
+//OTHER METHODS I COULD POTENTIALLY INCLUDE IN THE PRODUCTS CLASS
+/*
     async getProductsByName(name: string){
         let expr = new RegExp(name, "gi")
         let products = await productModel.find({name: {$regex: expr}})
