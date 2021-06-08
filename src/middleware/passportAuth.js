@@ -6,7 +6,6 @@ const ExtractJWT = require('passport-jwt').ExtractJwt;
 const StrategyOptionsObject = {
     jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
     secretOrKey: process.env.SECRET,
-    passReqToCallback: true,
     jsonWebTokenOptions: {
         complete: false,
         maxAge: '2d',
@@ -14,8 +13,8 @@ const StrategyOptionsObject = {
     }
 }
 
-const jwtStrategy = new JWTstrategy(StrategyOptionsObject, (payload, done)=> {
-    User.findOne({id: payload.sub}, function(err, user) {
+const jwtStrategy = new JWTstrategy(StrategyOptionsObject, function(payload, done){
+    userModel.findOne({id: payload.sub}, function(err, user) {
         if (err) {
             return done(err, false);
         }
@@ -25,6 +24,6 @@ const jwtStrategy = new JWTstrategy(StrategyOptionsObject, (payload, done)=> {
             return done(null, false);
         }
     });
-})
+});
 
 module.exports = jwtStrategy;

@@ -18,12 +18,9 @@ const issueJWT = (user) => {
         iat: Date.now()
     }
 
-    const signedToken = jsonwebtoken.sign(payload, process.env.SECRET, {expiresIn});
+    const signedToken = jsonwebtoken.sign(payload, process.env.SECRET);
 
-    return {
-        token: `Bearer ${signedToken}`,
-        expiresIn
-    }
+    return signedToken;
 }
 
 module.exports = {createHash, issueJWT, isValidPassword}

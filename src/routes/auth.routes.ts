@@ -41,7 +41,7 @@ authRouter.post('/signup', (req, res) => {
         }
           console.log('User registration completed successfully');
           const jwToken = issueJWT(user);
-          res.render('protectedRoute.ejs', {user, token: jwToken.token, expiresIn: jwToken.expiresIn})
+          res.render('protectedRoute.ejs', {user, token: jwToken})
         }
       )
     }
@@ -63,7 +63,7 @@ authRouter.post('/login', function(req, res, next){
       const isValid = isValidPassword(user, password);
       if(isValid){
         const tokenObject = issueJWT(user);
-        res.render('protectedRoute.ejs', {user, token: tokenObject.token, expiresIn: tokenObject.expiresIn});
+        res.render('protectedRoute.ejs', {user, token: tokenObject})
       } else {
         res.render('error.ejs', {message: `Wrong password!`})
       }
