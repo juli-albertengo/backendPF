@@ -9,9 +9,9 @@ let carts = new cartsServices.Carts([])
 
 cartsRouter.get('/', passport.authenticate('jwt', { session: false }),  (req, res)=> {
     const user = req.user;
-    const tokenObject = req.tokenObject;
-    console.log(req)
-    res.render('protectedRoute.ejs', {user, token: tokenObject.token, expiresIn: tokenObject.expiresIn});
+    //const tokenObject = req.tokenObject;
+    console.log(user)
+    res.render('protectedRoute.ejs', {user});
 })
 
 //GET /carritos/:carrito_id  => Obtener un carrito por su ID
