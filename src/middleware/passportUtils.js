@@ -17,7 +17,7 @@ const issueJWT = (user) => {
         iat: Date.now()
     }
 
-    const signedToken = jsonwebtoken.sign(payload, process.env.SECRET);
+    const signedToken = jsonwebtoken.sign(payload, process.env.SECRET, { expiresIn: '30m'});
 
     return signedToken;
 }

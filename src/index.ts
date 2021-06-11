@@ -16,8 +16,8 @@ app.use(express.urlencoded({extended: true}));
 app.use(passport.initialize());
 passport.use(jwtStrategy);
 
-app.set('view engine', 'ejs');
-app.set('views', './public/views');
+//app.set('view engine', 'ejs');
+//app.set('views', './public/views');
 app.use(express.static('public'));
 
 app.use('/products', productsRouter);
@@ -25,11 +25,12 @@ app.use('/carts', cartsRouter);
 app.use('/auth', authRouter);
 
 app.get('/', (req, res)=>{
-    res.render('index.ejs');
+    res.status(200)
+    res.json({message: `Welcome Page`});
 })
 
 app.get('/error', (req, res)=> {
-    res.render('error.ejs', {message: "There has been an unexpected error, please try again."})
+    res.json({message: "There has been an unexpected error, please try again."})
 })
 
 const startServer = async() => {

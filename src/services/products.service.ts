@@ -26,55 +26,89 @@ export class Products{
     }
 
     async getAllProducts(){
-        this.products = await productModel.find({})
-        if(this.products === null || this.products === []){
-            return []
+        try {
+            this.products = await productModel.find({})
+            if(this.products === null || this.products === []){
+                return []
+            }
+            return this.products;
+        } catch (error){
+            console.log(error)
+            return [];
         }
-        return this.products;
     }
 
     async getProductsByCategory(category: string){
-        let products = await productModel.find({category: category})
-        if(products === null || products === []){
-            return []
+        try{
+            let products = await productModel.find({category: category})
+            if(products === null || products === []){
+                return []
+            }
+            return products;
+        } catch (error){
+            console.log(error)
+            return [];
         }
-        return products;
+
     }
 
     async getProductById(id: string){
-        let product = await productModel.findOne({_id: id})
-        if(!product){
-            return {}
+        try {
+            let product = await productModel.findOne({_id: id})
+            if(!product){
+                return {}
+            }
+            return product;
+        } catch (error){
+            console.log(error)
+            return {};
         }
-        return product;
     }
 
     async addProduct(product: any){
-        let productToSave = new productModel(product);
-        let savedProduct = await productToSave.save();
-        return savedProduct;
+        const {name, category, description, foto, price} = product;
+        const createProduct = {name, category, description, foto, price};
+        let productToSave = new productModel(createProduct);
+        try {
+            let savedProduct = await productToSave.save();
+            return savedProduct;
+        } catch (error) {
+            console.log(error);
+            return {}
+        }
     }
 
     async updateProductById(id: string, updatedProduct: any){
-        let product = await productModel.updateOne({_id: id}, {$set: updatedProduct});
-        if(!product){
-            return {error : 'Product not found'}
+        try {
+            let product = await productModel.updateOne({_id: id}, {$set: updatedProduct});
+            if(!product){
+                return {error : 'Product not found'}
+            }
+            return product;
+        } catch (error) {
+            console.log(error);
+            return {}
         }
-        return product;
     }
 
     async deleteProduct(id: string){
-        let product = await productModel.deleteOne({_id: id})
-        if(!product){
+        try {
+            let product = await productModel.deleteOne({_id: id})
+            if(!product){
+                return {error: `Product not found`}
+            }
+            return product;
+        } catch (error){
+            console.log(error);
             return {}
         }
-        return product;
     }
 }
 
 
 //OTHER METHODS I COULD POTENTIALLY INCLUDE IN THE PRODUCTS CLASS
 /*
+
     async getProductsByName(name: string){
         let expr = new RegExp(name, "gi")
         let products = await productModel.find({name: {$regex: expr}})
@@ -83,6 +117,7 @@ export class Products{
         }
         return products;
     }
+
 
     async getProductsByPriceRange(min, max){
         let myMin = parseInt(min);

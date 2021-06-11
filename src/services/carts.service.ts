@@ -1,15 +1,18 @@
-const fs = require('fs')
-const path = require('path')
+import {cartModel} from '../repositories/index';
 import {Product} from './products.service';
 
 export class Cart {
     public id: string
+    public email: string
     public timestamp: Date
+    public deliveryAddress: string
     public products: Array<Product>
 
-    constructor(id: string, timestamp: Date, products: Array<Product>){
+    constructor(id: string, email: string, timestamp: Date, deliveryAddress: string, products: Array<Product>){
         this.id = id;
+        this.email = email;
         this.timestamp = timestamp;
+        this.deliveryAddress = deliveryAddress;
         this.products = products;
     }
 }
@@ -22,83 +25,63 @@ export class Carts {
     }
 
     async getCartById(id: string){
-        this.carts = await bringCartsFromDB();
-        let cart = this.carts.find(cart => {
-            return cart.id === id
-        })
-        if(!cart){
-            return {}
+        try {
+            let cart = await cartModel.findOne({_id: id})
+            if(!cart){
+                return {}
+            }
+            return cart;
+        } catch (error){
+            console.log(error)
+            return {};
         }
-        return cart;
     }
 
     async addProductsToCart(id: string, productsToAdd: string){
         //Encontrar el carrito y modificarlo
-        this.carts = await bringCartsFromDB();
-        let cart = this.carts.find(cart => {
-            return cart.id === id;
-        })
-        if(!cart){
-            return {error : 'Producto no encontrado'}
+        try {
+            let cart = await cartModel.findOne({_id: id})
+            if(!cart){
+                return {}
+            }
+            let myProducts = JSON.parse(productsToAdd)
+            cart.products = [...cart.products, ...myProducts]
+            //Guardar el nuevo cart a la DB
+            try {
+                let modifiedCart = await cart.save();
+                return modifiedCart
+            } catch (error) {
+                console.log(error);
+                return {error: `There has been an error saving cart => ${error}`}
+            }
+        } catch (error){
+            console.log(error)
+            return {};
         }
-        let myProducts = JSON.parse(productsToAdd)
-        cart.products = [...cart.products, ...myProducts]
-
-        //Guardar el nuevo array de carts a la db
-        let newSetCarts = this.carts.filter(cart => {
-            return cart.id !== id
-        })
-        this.carts = [...newSetCarts, cart];
-        saveCartsToDB(this.carts);
-
-        return cart;
     }
 
     async deleteProductFromCart(id: string, productToDelete: string){
         //Encontrar el carrito
-        this.carts = await bringCartsFromDB();
-        let cart = this.carts.find(cart => {
-            return cart.id === id;
-        })
-        if(!cart){
-            return {error : 'Producto no encontrado'}
+        try {
+            let cart = await cartModel.findOne({_id: id})
+            if(!cart){
+                return {}
+            }
+            let productoParaBorrar = JSON.parse(productToDelete)
+            cart.products = cart.products.filter(product => {
+                return product.id !== productoParaBorrar[0].id
+            })
+            //Guardar el nuevo cart a la DB
+            try {
+                let modifiedCart = await cart.save();
+                return modifiedCart
+            } catch (error) {
+                console.log(error);
+                return {error: `There has been an error saving cart => ${error}`}
+            }
+        } catch (error){
+            console.log(error)
+            return {};
         }
-
-        //Parseo el productos para borrar 
-        let productoParaBorrar = JSON.parse(productToDelete)
-
-        cart.products = cart.products.filter(product => {
-            return product.id !== productoParaBorrar[0].id
-        })
-
-        //Guardar el nuevo array de carts a la db
-        let newSetCarts = this.carts.filter(cart => {
-            return cart.id !== id
-        })
-        this.carts = [...newSetCarts, cart];
-        saveCartsToDB(this.carts);
-
-        return cart;
-    }
-}
-
-const bringCartsFromDB = async() => {
-    try {
-        const data = await fs.promises.readFile(`${path.join(__dirname + '/../repositories/carts.json')}`, 'utf-8');
-        const carts = await JSON.parse(data);
-        return carts;
-    } catch (error){
-        console.log(error);
-        return [];
-    }
-}
-
-const saveCartsToDB = async(carts: Array<Cart>) => {
-    let parsedCarts = JSON.stringify(carts);
-    try {
-        await fs.promises.writeFile(`${path.join(__dirname + '/../repositories/carts.json')}`, parsedCarts);
-    } catch (error){
-        console.log(error);
-        return [];
     }
 }
