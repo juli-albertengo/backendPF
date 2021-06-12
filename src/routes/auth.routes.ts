@@ -1,7 +1,8 @@
 require('dotenv').config();
 const express = require('express');
-const {createHash, issueJWT, isValidPassword} = require('../middleware/passportUtils');
+const {createHash, issueJWT, isValidPassword} = require('../utils/passportUtils');
 const {userModel} = require('../repositories');
+const {sendRegistrationEmail} = require('../utils/nodemailer');
 
 const authRouter = express.Router();
 
@@ -33,6 +34,7 @@ authRouter.post('/signup', (req, res) => {
                 res.render('error.ejs', {message: `There has been an error saving new user in DB => ${err}`})
               }
                 console.log('User registration completed successfully');
+                sendRegistrationEmail(user.firstName);
                 const jwToken = issueJWT(user);
                 res.json({user, token: jwToken})
               })
@@ -83,5 +85,11 @@ authRouter.get("/logout", (req, res)=> {
     req.logout();
     res.json({message: `Logout Successful`});
 })
+
+//GET => Default Route
+authRouter.get('/*', (req, res) => {
+  res.json({message: `There's nothing to see here`});
+})
+
 
 export default authRouter

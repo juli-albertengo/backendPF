@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const productModel = require('./products');
 const cartModel = require('./carts');
+const orderModel = require('./orders');
 const userModel = require('./user');
 
 const connectToDB = async() => {
@@ -12,4 +13,4 @@ const connectToDB = async() => {
     }
 }
 
-module.exports = {productModel, cartModel, userModel, connectToDB}
+module.exports = {productModel, cartModel, userModel, connectToDB, orderModel}

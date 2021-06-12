@@ -10,6 +10,7 @@ import {connectToDB} from './repositories/index';
 import {productsRouter} from "./routes";
 import {cartsRouter} from "./routes";
 import {authRouter} from "./routes";
+import {orderRouter} from "./routes";
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -23,6 +24,7 @@ app.use(express.static('public'));
 app.use('/products', productsRouter);
 app.use('/carts', cartsRouter);
 app.use('/auth', authRouter);
+app.use('/orders', orderRouter);
 
 app.get('/', (req, res)=>{
     res.status(200)
@@ -31,6 +33,10 @@ app.get('/', (req, res)=>{
 
 app.get('/error', (req, res)=> {
     res.json({message: "There has been an unexpected error, please try again."})
+})
+
+app.get('/*', (req, res) => {
+    res.json({message: `There's nothing to see here`});
 })
 
 const startServer = async() => {

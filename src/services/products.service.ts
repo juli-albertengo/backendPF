@@ -66,9 +66,7 @@ export class Products{
     }
 
     async addProduct(product: any){
-        const {name, category, description, foto, price} = product;
-        const createProduct = {name, category, description, foto, price};
-        let productToSave = new productModel(createProduct);
+        let productToSave = new productModel(product);
         try {
             let savedProduct = await productToSave.save();
             return savedProduct;

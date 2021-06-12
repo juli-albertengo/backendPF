@@ -2,7 +2,6 @@ require('dotenv').config();
 const {userModel} = require('../repositories');
 const JWTstrategy = require('passport-jwt').Strategy;
 const ExtractJWT = require('passport-jwt').ExtractJwt;
-const {parseUnixTimestamp} = require('./passportUtils')
 
 const StrategyOptionsObject = {
     jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),

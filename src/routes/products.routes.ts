@@ -30,9 +30,8 @@ productsRouter.get('/category/:category', async (req, res)=> {
 
 //POST /productos => Para incorporar productos al listado
 productsRouter.post('/', async (req, res)=> {
-    const {id, name, category, description, foto, price} = req.body;
+    const {name, category, description, foto, price} = req.body;
     let product = {
-        id,
         name,
         category,
         description,
@@ -63,6 +62,11 @@ productsRouter.delete('/:id', async (req, res)=> {
     const {id} = req.params;
     let deletedProduct = await productos.deleteProduct(id);
     res.json(deletedProduct);
+})
+
+//GET => Default Route
+productsRouter.get('/*', (req, res) => {
+    res.json({message: `There's nothing to see here`});
 })
 
 export default productsRouter;
