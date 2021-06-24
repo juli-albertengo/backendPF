@@ -1,11 +1,11 @@
-require('dotenv').config();
+const config = require('../config');
 const {userModel} = require('../repositories');
 const JWTstrategy = require('passport-jwt').Strategy;
 const ExtractJWT = require('passport-jwt').ExtractJwt;
 
 const StrategyOptionsObject = {
     jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-    secretOrKey: process.env.SECRET,
+    secretOrKey: config.PASSPORT_SECRET,
 }
 
 const jwtStrategy = new JWTstrategy(StrategyOptionsObject, function(payload, done){

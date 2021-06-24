@@ -1,10 +1,8 @@
-require('dotenv').config();
+const config = require('./config.js');
 const express = require('express');
 const passport = require('passport');
 const jwtStrategy = require('./middleware/passportAuth');
 const app = express()
-
-const PORT = 8080 || process.env.PORT
 
 import {connectToDB} from './repositories/index';
 import {productsRouter} from "./routes";
@@ -42,8 +40,9 @@ app.get('/*', (req, res) => {
 const startServer = async() => {
     const connected = await connectToDB();
     if(connected == 'DB Connection established'){
-        app.listen(PORT, ()=> {
-            console.log(`${connected} => App listening on port ${PORT}`);
+        app.listen(config.PORT, ()=> {
+            console.log(`Environment: ${config.NODE_ENV}`)
+            console.log(`${connected} => App listening on port ${config.PORT}`);
         })
     } else {
         console.log(`There has been an error connecting to the DB => ${connected}`)
@@ -51,15 +50,3 @@ const startServer = async() => {
 }
 
 startServer();
-
-// Function to be used when localhost doesn't take my stylesheets
-app.get('/public/css/styles.css', (req, res)=>{
-    res.set('Content-Type', 'text/css');
-    res.send('/public/css/styles.css')
-})
-
-app.get('/auth/css/styles.css', (req, res)=>{
-    res.set('Content-Type', 'text/css');
-    res.send('/public/css/styles.css')
-})
-

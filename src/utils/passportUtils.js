@@ -1,3 +1,4 @@
+const config = require('../config');
 const bCrypt = require('bcrypt');
 const jsonwebtoken = require('jsonwebtoken');
 
@@ -17,7 +18,7 @@ const issueJWT = (user) => {
         iat: Date.now()
     }
 
-    const signedToken = jsonwebtoken.sign(payload, process.env.SECRET, { expiresIn: '30m'});
+    const signedToken = jsonwebtoken.sign(payload, config.PASSPORT_SECRET, { expiresIn: '30m'});
 
     return signedToken;
 }

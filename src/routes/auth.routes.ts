@@ -1,4 +1,3 @@
-require('dotenv').config();
 const express = require('express');
 const {createHash, issueJWT, isValidPassword} = require('../utils/passportUtils');
 const {userModel} = require('../repositories');
